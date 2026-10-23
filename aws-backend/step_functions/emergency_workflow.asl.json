@@ -1,0 +1,230 @@
+{
+  "Comment": "Nexus Emergency Response Workflow",
+  "StartAt": "ReceiveFallEvent",
+  "States": {
+    "ReceiveFallEvent": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:123456789012:function:nexus-fall-handler",
+      "ResultPath": "$.fallResult",
+      "Next": "CheckConfidence",
+      "Catch": [
+        {
+          "ErrorEquals": ["States.TaskFailed"],
+          "Next": "LogError"
+        }
+      ]
+    },
+    "CheckConfidence": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.fallResult.confidence",
+          "NumericGreaterThanEquals": 0.7,
+          "Next": "ConfirmFall"
+        },
+        {
+          "Variable": "$.fallResult.confidence",
+          "NumericGreaterThan": 0.45,
+          "Next": "WaitAndRecheck"
+        },
+        {
+          "Variable": "$.fallResult.classification",
+          "StringEquals": "normal_activity",
+          "Next": "LogNormalActivity"
+        }
+      ],
+      "Default": "LogNormalActivity"
+    },
+    "ConfirmFall": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:123456789012:function:nexus-fall-handler",
+      "ResultPath": "$.confirmedFall",
+      "Next": "AlexaVoiceCheck"
+    },
+    "WaitAndRecheck": {
+      "Type": "Wait",
+      "Seconds": 5,
+      "Next": "ReceiveFallEvent"
+    },
+    "AlexaVoiceCheck": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:123456789012:function:nexus-alert-router",
+      "ResultPath": "$.voiceCheckResult",
+      "Next": "CaptureSnapshots",
+      "Comment": "Trigger Alexa to ask Ruth if she's okay"
+    },
+    "CaptureSnapshots": {
+      "Type": "Parallel",
+      "ResultPath": "$.snapshots",
+      "Branches": [
+        {
+          "Name": "FrontDoorCamera",
+          "StartAt": "CaptureFrontDoor",
+          "States": {
+            "CaptureFrontDoor": {
+              "Type": "Task",
+              "Resource": "arn:aws:lambda:us-east-1:123456789012:function:nexus-ring-snapshot",
+              "End": true
+            }
+          }
+        },
+        {
+          "Name": "KitchenCamera",
+          "StartAt": "CaptureKitchen",
+          "States": {
+            "CaptureKitchen": {
+              "Type": "Task",
+              "Resource": "arn:aws:lambda:us-east-1:123456789012:function:nexus-ring-snapshot",
+              "End": true
+            }
+          }
+        },
+        {
+          "Name": "RekognitionAnalysis",
+          "StartAt": "AnalyzeWithRekognition",
+          "States": {
+            "AnalyzeWithRekognition": {
+              "Type": "Task",
+              "Resource": "arn:aws:lambda:us-east-1:123456789012:function:nexus-rekognition-analyzer",
+              "End": true
+            }
+          }
+        }
+      ],
+      "Next": "SendMultiChannelAlerts"
+    },
+    "SendMultiChannelAlerts": {
+      "Type": "Parallel",
+      "ResultPath": "$.alerts",
+      "Branches": [
+        {
+          "Name": "SMSAlert",
+          "StartAt": "SendSMS",
+          "States": {
+            "SendSMS": {
+              "Type": "Task",
+              "Resource": "arn:aws:lambda:us-east-1:123456789012:function:nexus-alert-router",
+              "End": true
+            }
+          }
+        },
+        {
+          "Name": "EmailAlert",
+          "StartAt": "SendEmail",
+          "States": {
+            "SendEmail": {
+              "Type": "Task",
+              "Resource": "arn:aws:lambda:us-east-1:123456789012:function:nexus-alert-router",
+              "End": true
+            }
+          }
+        },
+        {
+          "Name": "FireTVUpdate",
+          "StartAt": "UpdateFireTV",
+          "States": {
+            "UpdateFireTV": {
+              "Type": "Task",
+              "Resource": "arn:aws:lambda:us-east-1:123456789012:function:nexus-device-controller",
+              "End": true
+            }
+          }
+        },
+        {
+          "Name": "DashboardNotification",
+          "StartAt": "NotifyDashboard",
+          "States": {
+            "NotifyDashboard": {
+              "Type": "Task",
+              "Resource": "arn:aws:lambda:us-east-1:123456789012:function:nexus-alert-router",
+              "End": true
+            }
+          }
+        }
+      ],
+      "Next": "WaitForCaregiverResponse"
+    },
+    "WaitForCaregiverResponse": {
+      "Type": "Wait",
+      "Seconds": 30,
+      "Next": "CheckCaregiverResponse"
+    },
+    "CheckCaregiverResponse": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:123456789012:function:nexus-fall-handler",
+      "ResultPath": "$.caregiverResponse",
+      "Next": "CaregiverAcknowledged"
+    },
+    "CaregiverAcknowledged": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.caregiverResponse.acknowledged",
+          "BooleanEquals": true,
+          "Next": "DispatchHelp"
+        },
+        {
+          "Variable": "$.caregiverResponse.escalated",
+          "BooleanEquals": true,
+          "Next": "EscalateTo911"
+        }
+      ],
+      "Default": "WaitForCaregiverResponse"
+    },
+    "DispatchHelp": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:123456789012:function:nexus-alert-router",
+      "ResultPath": "$.helpDispatch",
+      "Next": "UpdateDashboard",
+      "Comment": "Notify nursing service and family that help is on the way"
+    },
+    "EscalateTo911": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:123456789012:function:nexus-alert-router",
+      "ResultPath": "$.escalation",
+      "Next": "UpdateDashboard",
+      "Comment": "Emergency escalation — 911 notified"
+    },
+    "UpdateDashboard": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:123456789012:function:nexus-alert-router",
+      "ResultPath": "$.dashboardUpdate",
+      "Next": "LogEvent",
+      "Comment": "Update caregiver dashboard with real-time status"
+    },
+    "LogEvent": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:123456789012:function:nexus-fall-handler",
+      "ResultPath": "$.logResult",
+      "Next": "GenerateReport",
+      "Comment": "Store full event timeline in DynamoDB"
+    },
+    "GenerateReport": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:123456789012:function:nexus-care-reporter",
+      "ResultPath": "$.report",
+      "Next": "SendReportToFamily",
+      "Comment": "Generate incident report for family review"
+    },
+    "SendReportToFamily": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:123456789012:function:nexus-care-reporter",
+      "End": true,
+      "Comment": "Email report to caregiver via SES"
+    },
+    "LogNormalActivity": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:123456789012:function:nexus-fall-handler",
+      "ResultPath": "$.logResult",
+      "End": true,
+      "Comment": "Log normal activity — no emergency action needed"
+    },
+    "LogError": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:123456789012:function:nexus-fall-handler",
+      "ResultPath": "$.errorLog",
+      "End": true,
+      "Comment": "Log error for monitoring and alerting"
+    }
+  }
+}

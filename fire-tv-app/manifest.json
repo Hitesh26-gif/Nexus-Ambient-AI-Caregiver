@@ -1,0 +1,46 @@
+{
+  "legalTexts": [
+    {
+      "contentType": "TERMS_OF_USE",
+      "data": "By using Nexus, you consent to continuous health monitoring and emergency alerting. Data is encrypted and used solely for care purposes.",
+      "language": "en-US"
+    }
+  ],
+  "modules": [
+    {
+      "moduleType": "VideoApplication",
+      "manifest": {
+        "version": "1.0.0",
+        "appDescription": "Nexus — Ambient eldercare display for Fire TV",
+        "iconPath": "icons/icon-192.png",
+        "screenshots": ["screenshots/home.png"],
+        "name": "Nexus Care Display",
+        "developer": "Nexus Health Inc.",
+        "description": "Ambient display showing family photos, health vitals, and emergency alerts for elderly care at home.",
+        "landingPageUrl": "https://nexus.health",
+        "developerUrl": "https://nexus.health/about"
+      }
+    }
+  ],
+  "locales": {
+    "en-US": {
+      "manifest": {
+        "name": "Nexus Care Display",
+        "description": "Ambient display for elderly care monitoring"
+      }
+    }
+  },
+  "categories": ["HealthAndFitness"],
+  "enablePersonalizedProfilePage": false,
+  "permissions": [
+    "camera_access",
+    "microphone_access",
+    "notification_access"
+  ],
+  "primaryLocale": "en-US",
+  "languageNames": {
+    "en": "English"
+  },
+  "supportedInputs": ["remote", "voice"],
+  "supportedResolutions": ["1080p", "4k"]
+}

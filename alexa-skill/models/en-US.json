@@ -1,0 +1,138 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "nexus",
+      "intents": [
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "StatusCheckIntent",
+          "slots": [],
+          "samples": [
+            "am I okay",
+            "how am I doing",
+            "what is my status",
+            "is everything alright",
+            "am I healthy",
+            "check on me",
+            "how do I look",
+            "what is going on"
+          ]
+        },
+        {
+          "name": "CallFamilyIntent",
+          "slots": [
+            {
+              "name": "familyMember",
+              "type": "FamilyMember"
+            }
+          ],
+          "samples": [
+            "call my {familyMember}",
+            "phone {familyMember}",
+            "get in touch with {familyMember}",
+            "reach out to {familyMember}",
+            "call my son",
+            "call mark",
+            "call my daughter"
+          ]
+        },
+        {
+          "name": "MedicationIntent",
+          "slots": [],
+          "samples": [
+            "what time is my medication",
+            "when do I take my pills",
+            "did I take my medicine",
+            "medication reminder",
+            "what pills do I take",
+            "tell me about my medicine"
+          ]
+        },
+        {
+          "name": "EmergencyIntent",
+          "slots": [],
+          "samples": [
+            "I need help",
+            "help me",
+            "I fell",
+            "I am not okay",
+            "something is wrong",
+            "call 911",
+            "emergency",
+            "I need someone"
+          ]
+        },
+        {
+          "name": "VitalsIntent",
+          "slots": [],
+          "samples": [
+            "what are my vitals",
+            "how is my heart rate",
+            "check my health",
+            "what is my blood pressure",
+            "show me my stats"
+          ]
+        },
+        {
+          "name": "ChatIntent",
+          "slots": [
+            {
+              "name": "topic",
+              "type": "ChatTopic"
+            }
+          ],
+          "samples": [
+            "talk to me about {topic}",
+            "tell me about {topic}",
+            "what is the weather",
+            "tell me a story",
+            "what day is it",
+            "how are you"
+          ]
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.FallbackIntent",
+          "slots": [],
+          "samples": []
+        }
+      ],
+      "types": [
+        {
+          "name": "FamilyMember",
+          "values": [
+            { "name": { "value": "son" } },
+            { "name": { "value": "mark" } },
+            { "name": { "value": "daughter" } },
+            { "name": { "value": "nurse" } },
+            { "name": { "value": "doctor" } }
+          ]
+        },
+        {
+          "name": "ChatTopic",
+          "values": [
+            { "name": { "value": "the weather" } },
+            { "name": { "value": "a story" } },
+            { "name": { "value": "music" } },
+            { "name": { "value": "sports" } },
+            { "name": { "value": "the news" } }
+          ]
+        }
+      ]
+    }
+  }
+}

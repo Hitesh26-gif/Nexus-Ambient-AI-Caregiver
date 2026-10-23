@@ -1,0 +1,12 @@
+{
+  "interactionModel": {
+    "languageModel": "en-US",
+    "invocationName": "nexus",
+    "models": [
+      {
+        "locale": "en-US",
+        "interactionModelSpecificationFile": "models/en-US.json"
+      }
+    ]
+  }
+}

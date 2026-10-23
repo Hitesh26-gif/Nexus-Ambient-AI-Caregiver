@@ -1,0 +1,16 @@
+{
+  "name": "nexus",
+  "version": "1.0.0",
+  "description": "Nexus — Ambient AI Caregiver for Elderly Independence",
+  "private": true,
+  "workspaces": [
+    "caregiver-dashboard"
+  ],
+  "scripts": {
+    "dev:dashboard": "npm --prefix caregiver-dashboard run dev",
+    "dev:bee": "python bee-simulator/simulator.py",
+    "lint": "npm --prefix caregiver-dashboard run lint"
+  },
+  "keywords": ["elderly-care", "ai", "amazon-hackathon", "wearable", "iot"],
+  "license": "MIT"
+}

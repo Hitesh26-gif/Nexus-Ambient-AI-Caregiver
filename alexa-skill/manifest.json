@@ -1,0 +1,30 @@
+{
+  "manifest": {
+    "publishingInformation": {
+      "locales": ["en-US"],
+      "name": "Nexus",
+      "description": "AI-powered eldercare companion. Monitor loved ones, detect emergencies, and get peace of mind — all through natural conversation.",
+      "summary": "Always-on AI caregiver for elderly independence.",
+      "examplePhrases": [
+        "Alexa, ask Nexus am I okay",
+        "Alexa, ask Nexus call my son",
+        "Alexa, ask Nexus how is mom doing",
+        "Alexa, ask Nexus what time is my medication",
+        "Alexa, open Nexus"
+      ],
+      "privacyPolicyUrl": "https://nexus.example.com/privacy",
+      "termsOfUseUrl": "https://nexus.example.com/terms"
+    },
+    "autoupplink": {
+      "enabled": false
+    },
+    "distributionSettings": {
+      "autoPublish": false,
+      "allowedDevices": ["ALL"]
+    }
+  },
+  "apiVersion": "2024-04-01",
+  "contacts": {
+    "emergencyContact": "Mark Martinez: (555) 123-4567"
+  }
+}
