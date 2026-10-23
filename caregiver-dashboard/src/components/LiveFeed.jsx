@@ -130,7 +130,7 @@ function LiveFeed({ emergencyActive, onDismissEmergency }) {
               <Box>
                 <Typography variant="caption" color="grey.500" display="block">{v.label}</Typography>
                 <Typography variant="h6" fontWeight="700">
-                  {v.value}<Typography component="span" variant="caption" color="grey.500"> {v.unit}</Typography>
+                  {v.value} <Typography component="span" variant="caption" color="grey.500">{v.unit}</Typography>
                 </Typography>
               </Box>
             </Paper>
