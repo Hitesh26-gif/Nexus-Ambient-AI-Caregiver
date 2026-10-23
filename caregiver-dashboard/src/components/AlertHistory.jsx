@@ -14,27 +14,27 @@ import {
 } from '@mui/icons-material';
 import { generateFallEvents, generateAlertHistory } from '../api/mockData';
 
-function TimelineItem({ children, alternate = false }) {
+function TimelineItem({ time, color, icon, content, hasMore, alternate = false }) {
   return (
     <Box sx={{ display: 'flex', mb: 2, flexDirection: alternate ? 'row-reverse' : 'row' }}>
       <Box sx={{ width: 60, flexShrink: 0, textAlign: 'center', alignSelf: 'flex-start', mt: 1 }}>
-        <Typography variant="caption" color="grey.500">{children.time}</Typography>
+        <Typography variant="caption" color="grey.500">{time}</Typography>
       </Box>
       <Box sx={{ width: 24, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
         <Box sx={{
           width: 16, height: 16, borderRadius: '50%',
-          bgcolor: children.color || '#6366f1',
+          bgcolor: color || '#6366f1',
           border: '3px solid #13131f',
           zIndex: 1,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
-          {children.icon}
+          {icon}
         </Box>
-        {children.hasMore && (
+        {hasMore && (
           <Box sx={{ width: 2, height: 'calc(100% + 8px)', bgcolor: 'grey.700', position: 'absolute', top: 16, left: '50%', transform: 'translateX(-50%)' }} />
         )}
       </Box>
-      <Box sx={{ flex: 1 }}>{children.content}</Box>
+      <Box sx={{ flex: 1 }}>{content}</Box>
     </Box>
   );
 }

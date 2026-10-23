@@ -139,10 +139,12 @@ function MapView() {
         {/* Motion trail */}
         {showTrail && plan.motionTrail && (
           <svg
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
             style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}
           >
             <defs>
-              <linearGradient id="trail-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <linearGradient id="trail-grad" x1="0" y1="0" x2="1" y2="0">
                 <stop offset="0%" stopColor="#6366f1" stopOpacity="0.2" />
                 <stop offset="100%" stopColor="#ef4444" stopOpacity="1" />
               </linearGradient>
@@ -150,21 +152,22 @@ function MapView() {
             {/* Trail line */}
             <polyline
               points={plan.motionTrail.map(p =>
-                `${p.x + 2}% ${p.y + 2}%`
+                `${p.x + 2} ${p.y + 2}`
               ).join(' ')}
               fill="none"
               stroke="url(#trail-grad)"
-              strokeWidth="3"
-              strokeDasharray="8 4"
+              strokeWidth="0.5"
+              strokeDasharray="1.5 0.8"
               strokeLinecap="round"
+              vectorEffect="non-scaling-stroke"
             />
             {/* Trail dots */}
             {plan.motionTrail.map((point, i) => (
               <circle
                 key={i}
-                cx={`${point.x + 2}%`}
-                cy={`${point.y + 2}%`}
-                r={i === plan.motionTrail.length - 1 ? 6 : 4}
+                cx={point.x + 2}
+                cy={point.y + 2}
+                r={i === plan.motionTrail.length - 1 ? 1.2 : 0.8}
                 fill={i === plan.motionTrail.length - 1 ? '#ef4444' : '#6366f1'}
                 opacity={i === plan.motionTrail.length - 1 ? 1 : 0.6}
               />
